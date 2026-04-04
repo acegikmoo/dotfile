@@ -96,18 +96,34 @@ map("n", "<C-p>", "<cmd>Telescope live_grep<CR>", { desc = "Search project (term
 
 -- COMPETITIVE PROGRAMMING (C++)
 map("n", "<leader>bb", "<cmd>w | !build.sh %:r<CR>", { desc = "Build" })
+
 map("n", "<leader>br", function()
   vim.cmd "w"
   local file_root = vim.fn.expand "%:r"
-  vim.cmd("!build.sh " .. file_root)
+  vim.fn.system("build.sh " .. file_root)
 
-  -- This makes the CP output part of managed terminals
-  require("nvchad.term").toggle {
-    pos = "sp",
-    id = "cpp_output",
-    cmd = "./" .. file_root .. "; read",
-  }
-end, { desc = "Build and run (Managed)" })
+  local maps = vim.api.nvim_get_keymap("n")
+  for _, m in ipairs(maps) do
+    if m.lhs == "<M-i>" and m.callback then
+      m.callback()
+      break
+    end
+  end
+
+  vim.defer_fn(function()
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.bo[buf].buftype == "terminal" and vim.api.nvim_buf_is_loaded(buf) then
+        local win = vim.fn.bufwinid(buf)
+        if win ~= -1 then
+          vim.api.nvim_set_current_win(win)
+          vim.cmd "startinsert"
+          vim.api.nvim_feedkeys("./" .. file_root .. "\n", "t", false)
+        end
+        break
+      end
+    end
+  end, 300)
+end, { desc = "Build and run (Float)" })
 
 -- TERMINAL MANAGEMENT
 -- Toggle or Create a Named Terminal
@@ -161,3 +177,13 @@ map("n", "<leader>q", function()
     vim.cmd "copen"
   end
 end, { desc = "Toggle quickfix list" })
+
+-- terminal debug
+map("n", "<leader>td", function()
+  local maps = vim.api.nvim_get_keymap("n")
+  for _, m in ipairs(maps) do
+    if m.lhs:find("\ti") or tostring(m.lhs) == "<M-i>" then
+      print(vim.inspect(m))
+    end
+  end
+end, { desc = "debug" })
