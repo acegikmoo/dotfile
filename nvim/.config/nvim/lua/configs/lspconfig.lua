@@ -13,6 +13,8 @@ lspconfig.clangd.setup {
   on_attach = function(client, bufnr)
     nvlsp.on_attach(client, bufnr)
 
+    vim.diagnostic.config { virtual_text = false }
+
     -- Format on save (conditional)
     vim.api.nvim_create_autocmd("BufWritePre", {
       buffer = bufnr,
