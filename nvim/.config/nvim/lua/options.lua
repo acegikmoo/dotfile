@@ -131,14 +131,12 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.softtabstop = 2
     vim.opt_local.expandtab = true
 
-    -- USE TREE-SITTER FOR JSX INDENTATION
-    vim.opt_local.indentexpr = "nvim_treesitter#indent()"
-
-    -- Disable smartindent/cindent as they conflict with tree-sitter
+    -- Tree-sitter handles indentation automatically via indent.enable = true
+    -- Setting indentexpr manually causes conflicts with newer nvim-treesitter
     vim.opt_local.smartindent = false
     vim.opt_local.cindent = false
-    vim.opt_local.autoindent = true -- Keep basic autoindent as fallback
-  end,
+    vim.opt_local.autoindent = true
+    end,
 })
 
 -- Competitive Programming: Append template to new C++ files
