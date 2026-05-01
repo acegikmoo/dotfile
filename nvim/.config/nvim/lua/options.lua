@@ -143,8 +143,8 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = "*.cpp",
   callback = function()
-    vim.cmd "0r /home/acegikmo/vimcp/Library/Template.cpp"
-    vim.cmd "normal! 53G^i    "
-    vim.cmd "startinsert"
+    vim.cmd("0r /home/acegikmo/vimcp/Library/Template.cpp")
+    vim.fn.search("void solve() {}")
+    vim.cmd("normal! f{lzza")
   end,
 })
